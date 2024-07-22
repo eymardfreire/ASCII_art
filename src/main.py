@@ -1,6 +1,6 @@
+import os
 from PIL import Image
 
-# Function to load an image
 def load_image(path):
     try:
         image = Image.open(path)
@@ -9,23 +9,19 @@ def load_image(path):
         print("Unable to load image")
         return None
 
-# Function to convert an image to grayscale
 def convert_to_grayscale(image):
     return image.convert('L')
 
-# ASCII characters used to build the output text
 ASCII_CHARS = "@%#*+=-:. "
 
-# Function to map pixels to ASCII characters
 def map_pixels_to_ascii(image):
     pixels = image.getdata()
     ascii_str = "".join([ASCII_CHARS[pixel // 32] for pixel in pixels])
     return ascii_str
 
-# Function to generate ASCII art from an image
 def generate_ascii_art(image, new_width=100):
     width, height = image.size
-    aspect_ratio = height/float(width)
+    aspect_ratio = height / float(width) / 2  # Adjusting for character proportions
     new_height = int(aspect_ratio * new_width)
     resized_image = image.resize((new_width, new_height))
     grayscale_image = convert_to_grayscale(resized_image)
@@ -38,8 +34,10 @@ def generate_ascii_art(image, new_width=100):
         ascii_img += ascii_str[i:i+img_width] + "\n"
     return ascii_img
 
-# Function to save the ASCII art to a file
 def save_ascii_art(ascii_art, path):
+    directory = os.path.dirname(path)
+    if directory and not os.path.exists(directory):
+        os.makedirs(directory)
     with open(path, "w") as f:
         f.write(ascii_art)
 
